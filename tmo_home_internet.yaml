@@ -1,0 +1,61 @@
+sensor:
+  - platform: rest
+    name: tmo_router
+    resource: http://192.168.12.1/fastmile_radio_status_web_app.cgi
+    scan_interval: 60
+    json_attributes:
+      - cell_5G_stats_cfg
+      - cell_LTE_stats_cfg
+      - apn_cfg
+#    value_template: "{{ value_json.cell_5G_stats_cfg[0].stat }}"
+    value_template: "OK"
+  - platform: template
+    sensors:
+      tmo_5g_band:
+      #  unique_id: sensor.tmo_5g_band
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['Band'] }}"    
+      tmo_5g_snr:
+#        value_template: "{{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['SNRCurrent'] | round(0) }}"    
+#        value_template: "{% if state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['Band'] != "" %} {{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['SNRCurrent'] | round(0) }} {% else %} 'unavailable' {% endif %}"
+        value_template: > 
+          {% if state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['Band'] != "" %}
+            {{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['SNRCurrent'] | round(0) }}
+          {% else %}
+            0
+          {% endif %}
+        unit_of_measurement: 'dB'
+      tmo_5g_rsrp:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['RSRPCurrent'] | round(0) }}"    
+        unit_of_measurement: 'dB'
+      tmo_5g_rsrq:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['RSRQCurrent'] | round(0) }}"    
+        unit_of_measurement: 'dB'
+      tmo_5g_strength_index:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['RSRPStrengthIndexCurrent'] | round(0) }}"    
+        unit_of_measurement: 'index'
+      tmo_5g_cell_id:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['PhysicalCellID'] }}"    
+      tmo_5g_downlink_nr_arfcn:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_5G_stats_cfg')[0]['stat']['Downlink_NR_ARFCN'] }}"    
+      tmo_lte_band:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_LTE_stats_cfg')[0]['stat']['Band'] }}"
+      tmo_lte_snr:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_LTE_stats_cfg')[0]['stat']['SNRCurrent'] | round(0) }}"
+        unit_of_measurement: 'dB'
+      tmo_lte_rsrp:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_LTE_stats_cfg')[0]['stat']['RSRPCurrent'] | round(0) }}"   
+        unit_of_measurement: 'dB'
+      tmo_lte_rsrq:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_LTE_stats_cfg')[0]['stat']['RSRQCurrent'] | round(0) }}"
+        unit_of_measurement: 'dB'
+      tmo_lte_strength_index:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_LTE_stats_cfg')[0]['stat']['RSRPStrengthIndexCurrent'] | round(0) }}"
+        unit_of_measurement: 'index'
+      tmo_lte_cell_id:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_LTE_stats_cfg')[0]['stat']['PhysicalCellID'] }}"
+      tmo_lte_downlink_earfcn:
+        value_template: "{{ state_attr('sensor.tmo_router', 'cell_LTE_stats_cfg')[0]['stat']['DownlinkEarfcn'] }}"
+      tmo_ipv4:
+        value_template: "{{ state_attr('sensor.tmo_router', 'apn_cfg')[0]['X_ALU_COM_IPAddressV4'] }}"
+      tmo_ipv6:
+        value_template: "{{ state_attr('sensor.tmo_router', 'apn_cfg')[0]['X_ALU_COM_IPAddressV6'] }}"
