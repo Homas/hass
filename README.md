@@ -1,2 +1,2 @@
 # hass
-hass automations
+home assistant automations
