@@ -1,3 +1,10 @@
+######
+######T-Mobile home internet sensor
+######
+#http://192.168.12.1/fastmile_radio_status_web_app.cgi
+#https://www.reddit.com/r/tmobileisp/comments/ogegwg/how_to_read_and_understand_all_of_those_cell/
+######
+# You need to add the following configuration to your HASS configuration.yml
 sensor:
   - platform: rest
     name: tmo_router
